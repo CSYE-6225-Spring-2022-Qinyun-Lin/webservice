@@ -4,7 +4,9 @@ Using framework: Flask(python)
 ## Prerequisite
     - Python 3.x
     - flask
-        (pip install flask)
+    (below are for unit test)
+    - unittest
+    - pytest
 
 ## Deploy
 ```
@@ -12,8 +14,16 @@ Using framework: Flask(python)
 ```
 
 ## Unit Test
-Using pytest to perform the unit test, and so as the action workflow 
+method 1:
+  Using pytest to perform the unit test without manually run python code, so as the action workflow.
 ```
   pip install pytest
   pytest
 ```
+
+method 2:
+  Manually run test_request.py
+```
+  python src/test_request.py
+```
+
