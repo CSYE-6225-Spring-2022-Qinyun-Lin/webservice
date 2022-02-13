@@ -7,7 +7,7 @@ app = flask.Flask(__name__)
 # http://localhost:9999/
 # return: 200
 @app.route('/', methods=['GET', 'POST'])
-def call_service():
+aaaaadef call_service():
     # resp_json = json.dumps({"readOnly": False,
     #                         "writeOnly": False,
     #                         "multipleOf": 1,
