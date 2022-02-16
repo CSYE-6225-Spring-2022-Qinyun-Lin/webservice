@@ -9,10 +9,24 @@ class TestService(unittest.TestCase):
         self.client = app.test_client()
 
     def test_1(self):
-        resp = self.client.get("/", data={})
+        resp = self.client.get("/healthz")
 
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.headers["Content-Type"], "application / json")
+        self.assertEqual(200, resp.status_code)
+
+    def test_2(self):
+        resp = self.client.post("/v1/user", data="{}")
+
+        self.assertEqual(400, resp.status_code)
+
+    def test_3(self):
+        resp = self.client.get("/v1/user/self", data="{}")
+
+        self.assertEqual(401, resp.status_code)
+
+    def test_4(self):
+        resp = self.client.put("/v1/user/self")
+
+        self.assertEqual(401, resp.status_code)
 
 
 if __name__ == "__main__":
