@@ -44,6 +44,9 @@ def update_user_info():
     try:
         json_data = json.loads(request.data)
         to_update = json_data.keys()
+        if len(to_update) == 0:
+            return "Bad request", 400
+
         if "id" in to_update or "account_created" in to_update or "account_updated" in to_update:
             return "Bad request", 400
 
@@ -106,7 +109,7 @@ def create_user():
         else:
             return "Bad request", 400
 
-    except KeyError and json.decoder.JSONDecodeError:
+    except KeyError or json.decoder.JSONDecodeError:
         # return "Missing required field: %s" % e, 400
         return "Bad request", 400
 
