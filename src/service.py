@@ -41,31 +41,37 @@ def update_user_info():
     if auth == "":
         return "Unauthorized", 401
 
-    json_data = json.loads(request.data)
-    to_update = json_data.keys()
-    if "id" in to_update or "account_created" in to_update or "account_updated" in to_update:
-        return "Bad request", 400
+    try:
+        json_data = json.loads(request.data)
+        to_update = json_data.keys()
+        if len(to_update) == 0:
+            return "Bad request", 400
 
-    user_name, password = auth.split(":")
-    hash_psd = hashlib.md5(password.encode('utf-8')).hexdigest()
-    sql = "select * from health where user_name=\"%s\" and password=\"%s\";" % (user_name, hash_psd)
-    result = db_operation.execute_and_get_result(sql)
-    if result:
-        sql = "update health set "
-        for key in to_update:
-            value = json_data[key]
-            if key == "password":
-                value = hashlib.md5(value.encode('utf-8')).hexdigest()
-            sql += "%s = \"%s\", " % (key, value)
+        if "id" in to_update or "account_created" in to_update or "account_updated" in to_update:
+            return "Bad request", 400
 
-        sql += "account_updated = \"%s\"" % (datetime.datetime.now())
+        user_name, password = auth.split(":")
+        hash_psd = hashlib.md5(password.encode('utf-8')).hexdigest()
+        sql = "select * from health where user_name=\"%s\" and password=\"%s\";" % (user_name, hash_psd)
+        result = db_operation.execute_and_get_result(sql)
+        if result:
+            sql = "update health set "
+            for key in to_update:
+                value = json_data[key]
+                if key == "password":
+                    value = hashlib.md5(value.encode('utf-8')).hexdigest()
+                sql += "%s = \"%s\", " % (key, value)
 
-        sql += " where user_name=\"%s\" and password=\"%s\";" % (user_name, hash_psd)
-        print(sql)
-        db_operation.execute(sql)
+            sql += "account_updated = \"%s\"" % (datetime.datetime.now())
 
-        return "User updated", 204
-    else:
+            sql += " where user_name=\"%s\" and password=\"%s\";" % (user_name, hash_psd)
+            print(sql)
+            db_operation.execute(sql)
+
+            return "User updated", 204
+        else:
+            return "Bad request", 400
+    except json.decoder.JSONDecodeError:
         return "Bad request", 400
 
 
@@ -76,8 +82,8 @@ def health():
 
 @app.route('/v1/user', methods=['POST'])
 def create_user():
-    json_data = json.loads(request.data)
     try:
+        json_data = json.loads(request.data)
         first_name = json_data["first_name"]
         last_name = json_data["last_name"]
         password = json_data["password"]
@@ -103,7 +109,7 @@ def create_user():
         else:
             return "Bad request", 400
 
-    except KeyError as e:
+    except KeyError or json.decoder.JSONDecodeError:
         # return "Missing required field: %s" % e, 400
         return "Bad request", 400
 

@@ -16,10 +16,13 @@ def connect_mysql():
 def execute_and_get_result(sql):
     con = connect_mysql()
     cursor = con.cursor(buffered=True)
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    con.close()
-    return result
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        con.close()
+        return result
+    except Exception:
+        return None
 
 
 def execute(sql):
