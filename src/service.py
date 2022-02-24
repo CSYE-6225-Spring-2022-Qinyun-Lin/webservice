@@ -105,7 +105,15 @@ def create_user():
         print(sql)
         success = db_operation.execute(sql)
         if success:
-            return "User created", 201
+            resp_json = json.dumps({"id": user_id,
+                                    "first_name": first_name,
+                                    "last_name": last_name,
+                                    "user_name": username,
+                                    "account_created": str(account_created),
+                                    "account_updated": str(account_updated)})
+            resp = flask.jsonify(resp_json)
+            resp.headers["Content-Type"] = "application / json"
+            return resp, 201
         else:
             return "Bad request", 400
 
