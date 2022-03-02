@@ -15,4 +15,4 @@ jobs:
         with:
           command: validate
           arguments: -syntax-only
-          target: ./packer/ami.json
+          target: ./webservice/packer/ami.json
