@@ -4,7 +4,7 @@ import mysql.connector as mc
 def connect_mysql():
     config = {
         'user': 'root',
-        'password': 'admin',
+        'password': 'adminadmin!',
         'host': '127.0.0.1',
         'port': '3306',
         'database': 'csye6225'
