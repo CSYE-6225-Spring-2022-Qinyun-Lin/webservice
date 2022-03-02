@@ -28,9 +28,6 @@ jobs:
           aws-region: us-east-1
 
       - name: Validate Template
-        run: |
-          pwd
-          ls -al
         uses: hashicorp/packer-github-actions@master
         with:
           command: validate
