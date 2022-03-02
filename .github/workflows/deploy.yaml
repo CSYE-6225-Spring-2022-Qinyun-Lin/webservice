@@ -17,6 +17,8 @@ jobs:
         run: |
           zip -r webservice.zip ./
           pwd ./webservice
+          ls -al
+          cd ..
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -26,6 +28,9 @@ jobs:
           aws-region: us-east-1
 
       - name: Validate Template
+        run: |
+          pwd
+          ls -al
         uses: hashicorp/packer-github-actions@master
         with:
           command: validate
