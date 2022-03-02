@@ -35,7 +35,7 @@ jobs:
         with:
           command: validate
           arguments: -syntax-only
-          target: ./packer/ami.json
+          target: ./packer/ami.pkr.json
 
       - name: Build Artifact
         uses: hashicorp/packer-github-actions@master
@@ -43,7 +43,7 @@ jobs:
           command: build
           arguments: "-color=false -on-error=abort -var=aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}
            -var=aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var-file=./packer/vars.json"
-          target: ./packer/ami.json
+          target: ./packer/ami.pkr.json
         env:
           PACKER_LOG: 1
 
