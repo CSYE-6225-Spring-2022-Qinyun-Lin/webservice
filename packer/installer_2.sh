@@ -21,7 +21,25 @@ DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.
 DELETE FROM mysql.user WHERE User='';
 DELETE FROM mysql.db WHERE Db='test' OR Db='test_%';
 FLUSH PRIVILEGES;
-CREATE DATABASE webapp;
+CREATE DATABASE csye6225;
+use csye6225;
+create table health
+(
+    id varchar(50) not null,
+    user_name varchar(50) not null,
+    password varchar(100) not null,
+    first_name varchar(30) not null,
+    last_name varchar(30) not null,
+    account_created datetime not null,
+    account_updated datetime not null,
+    constraint heath_id_uindex
+        unique (id),
+    constraint heath_user_name_uindex
+        unique (user_name)
+);
+
+alter table health
+    add primary key (id);
 EOF
 
 sudo yum -y install python3
