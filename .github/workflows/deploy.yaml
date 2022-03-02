@@ -18,7 +18,8 @@ jobs:
           zip -r webservice.zip ./
           pwd ./webservice
           ls -al
-          cd ..
+          cd packer
+          ls -al
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -31,7 +32,7 @@ jobs:
         uses: hashicorp/packer-github-actions@master
         with:
           command: validate
-          arguments: -var-file='./packer/vars.json'
+          arguments: -syntax-only
           target: ./packer/ami.json
 
       - name: Build Artifact
@@ -43,5 +44,3 @@ jobs:
           target: ./packer/ami.json
         env:
           PACKER_LOG: 1
-
-      
