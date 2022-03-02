@@ -3,7 +3,7 @@ name: AWS AMI using Packer Config
 
 on:
   push:
-    branches: [ assign_04 ]
+    branches: [ main ]
 
 jobs:
   deploy:
