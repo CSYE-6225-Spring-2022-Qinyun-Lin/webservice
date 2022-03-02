@@ -10,9 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Validate Template
         uses: hashicorp/packer-github-actions@master
         with:
           command: validate
           arguments: -syntax-only
-          target: ./webservice/packer/ami.json
+          target: ./packer/ami.json
