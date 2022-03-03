@@ -8,7 +8,7 @@ sudo -E yum -y update
 
 cd ~
 mkdir webservice
-cp /tmp/webservice.zip ~/webservice/webservice.zip
+cp /tmp/webservice.zip /home/ec2-user/webservice/webservice.zip
 
 sudo -E yum -y install unzip
 
