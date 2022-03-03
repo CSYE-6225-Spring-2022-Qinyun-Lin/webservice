@@ -5,8 +5,8 @@ After=network.target
 [Service]
 Type=idle
 Restart=on-failure
-User=root
-ExecStart=/bin/bash -c 'cd ~/webservice/src && python3 service.py'
+User=ec2-user
+ExecStart=/bin/bash -c 'cd /home/ec2-user/webservice/src && python3 service.py'
 
 [Install]
 WantedBy=default.target
