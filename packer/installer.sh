@@ -62,7 +62,7 @@ sudo yum -y install python3
 sudo yum -y install python3-pip
 sudo pip3 install flask mysql-connector
 
-cp ~/webservice/systemd/webapp.service /etc/systemd/system/webapp.service
+sudo cp ~/webservice/systemd/webapp.service /etc/systemd/system/webapp.service
 sudo chmod 644 /etc/systemd/system/webapp.service
 sudo -E yum install systemd -y
 sudo systemctl daemon-reload
