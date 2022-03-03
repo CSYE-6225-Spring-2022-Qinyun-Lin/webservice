@@ -1,0 +1,12 @@
+[Unit]
+Description=My Lovely Service
+After=network.target
+
+[Service]
+Type=idle
+Restart=on-failure
+User=root
+ExecStart=/bin/bash -c 'cd ~/webservice/src && python3 service.py'
+
+[Install]
+WantedBy=default.target

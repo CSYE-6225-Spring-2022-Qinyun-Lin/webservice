@@ -29,15 +29,20 @@
     }
   ],
   "provisioners": [
-      {
-          "type": "shell",
-          "environment_vars": [
-              "FOO=foo"
-          ],
-          "scripts": [
-            "./packer/installer_2.sh"
-          ]
-      }
+    {
+      "type": "file",
+      "source": "./webservice.zip",
+      "destination": "/tmp/webservice.zip"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [
+          "FOO=foo"
+      ],
+      "scripts": [
+        "./packer/installer.sh"
+      ]
+    }
   ]
 }
   
