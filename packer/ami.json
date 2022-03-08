@@ -12,11 +12,11 @@
   },
   "builders": [
     {
-      "type": "amazon-ebs",
-      "profile": "{{user `aws_profile`}}",
-      "source_ami": "{{user `source_ami`}}",
-      "access_key": "{{user `aws_access_key`}}",
-      "secret_key": "{{user `aws_secret_key`}}",
+      "type": "amazon-ebs"
+      "profile": "{{user `aws_profile`}}"
+      "source_ami": "{{user `source_ami`}}"
+      "access_key": "{{user `aws_access_key`}}"
+      "secret_key": "{{user `aws_secret_key`}}"
       "region": "{{user `aws_region`}}",
       "vpc_id": "{{user `vpc_id`}}",
       "subnet_id": "{{user `subnet_id`}}",
