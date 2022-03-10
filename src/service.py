@@ -153,7 +153,7 @@ def delete_user_profile_image():
             sql += "image_upload = null "
             sql += "where user_name = \"%s\";" % user_name
 
-            if s3_executor.delete(key=data[7]):
+            if db_executor.execute(sql) and s3_executor.delete(key=data[7]):
                 return "No Content", 204
             else:
                 return "Bad request", 400
