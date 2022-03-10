@@ -6,9 +6,12 @@ import hashlib
 import datetime
 import re
 import db_operation
+import s3_operation
 
 
 app = flask.Flask(__name__)
+db_executor = db_operation.DBExecutor()
+s3_executor = s3_operation.S3Executor()
 
 
 @app.route('/v1/user/self', methods=['GET'])
@@ -16,10 +19,9 @@ def get_user_info():
     auth = get_authentication(request.headers)
     if auth == "":
         return "Unauthorized", 401
+
     user_name, password = auth.split(":")
-    hash_psd = hashlib.md5(password.encode('utf-8')).hexdigest()
-    sql = "select * from health where user_name=\"%s\" and password=\"%s\";" % (user_name, hash_psd)
-    result = db_operation.execute_and_get_result(sql)
+    result = check_user_exist(user_name, password)
     if result:
         data = result[0]
         resp_json = json.dumps({"id": data[0],
@@ -51,9 +53,7 @@ def update_user_info():
             return "Bad request", 400
 
         user_name, password = auth.split(":")
-        hash_psd = hashlib.md5(password.encode('utf-8')).hexdigest()
-        sql = "select * from health where user_name=\"%s\" and password=\"%s\";" % (user_name, hash_psd)
-        result = db_operation.execute_and_get_result(sql)
+        result = check_user_exist(user_name, password)
         if result:
             sql = "update health set "
             for key in to_update:
@@ -64,14 +64,111 @@ def update_user_info():
 
             sql += "account_updated = \"%s\"" % (datetime.datetime.now())
 
-            sql += " where user_name=\"%s\" and password=\"%s\";" % (user_name, hash_psd)
+            sql += " where user_name=\"%s\";" % user_name
             print(sql)
-            db_operation.execute(sql)
+            db_executor.execute(sql)
 
             return "User updated", 204
         else:
             return "Bad request", 400
     except json.decoder.JSONDecodeError:
+        return "Bad request", 400
+
+
+@app.route('/v1/user/self/pic', methods=['POST'])
+def update_user_profile_image():
+    auth = get_authentication(request.headers)
+    if auth == "":
+        return "Unauthorized", 401
+
+    user_name, password = auth.split(":")
+    result = check_user_exist(user_name, password)
+    if result:
+        file = request.files["image"]
+        img_data = file.read()
+
+        image_filename = file.filename
+        image_upload = str(datetime.date.today())
+        image_id = hashlib.md5((user_name + image_upload).encode('utf-8')).hexdigest()
+        image_url = s3_executor.bucket_name + "/" + image_id
+
+        if not s3_executor.post(key=image_id, data=img_data):
+            return "Bad request", 400
+
+        sql = "update health set "
+        sql += "image_filename = \"%s\", " % image_filename
+        sql += "image_id = \"%s\", " % image_id
+        sql += "image_url = \"%s\", " % image_url
+        sql += "image_upload = \"%s\" " % image_upload
+        sql += "where user_name = \"%s\";" % user_name
+        print(sql)
+        if db_executor.execute(sql):
+
+            resp_json = json.dumps({"image_filename": image_filename,
+                                    "image_id": image_id,
+                                    "image_url": image_url,
+                                    "image_upload": image_upload,
+                                    "user_id": result[0][0]})
+            resp = flask.jsonify(resp_json)
+            resp.headers["Content-Type"] = "application / json"
+
+            return resp, 201
+        else:
+            return "Bad request", 400
+    else:
+        return "Bad request", 400
+
+
+@app.route('/v1/user/self/pic', methods=['GET'])
+def get_user_profile_image():
+    auth = get_authentication(request.headers)
+    if auth == "":
+        return "Unauthorized", 401
+
+    user_name, password = auth.split(":")
+    result = check_user_exist(user_name, password)
+    if result:
+        data = result[0]
+        if data[7] is not None:
+            resp_json = json.dumps({"image_filename": data[8],
+                                    "image_id": data[7],
+                                    "image_url": data[9],
+                                    "image_upload": str(data[10]),
+                                    "user_id": data[0]})
+            resp = flask.jsonify(resp_json)
+            resp.headers["Content-Type"] = "application / json"
+            return resp, 200
+        else:
+            return "Not found", 404
+    else:
+        return "Bad request", 400
+
+
+@app.route('/v1/user/self/pic', methods=['DELETE'])
+def delete_user_profile_image():
+    auth = get_authentication(request.headers)
+    if auth == "":
+        return "Unauthorized", 401
+
+    user_name, password = auth.split(":")
+    result = check_user_exist(user_name, password)
+    if result:
+        data = result[0]
+        if data[7] is not None:
+            sql = "update health set "
+            sql += "image_filename = null, "
+            sql += "image_id = null, "
+            sql += "image_url = null, "
+            sql += "image_upload = null "
+            sql += "where user_name = \"%s\";" % user_name
+
+            if db_executor.execute(sql) and s3_executor.delete(key=data[7]):
+                return "No Content", 204
+            else:
+                return "Bad request", 400
+        else:
+            return "Not found", 404
+    else:
         return "Bad request", 400
 
 
@@ -103,7 +200,7 @@ def create_user():
               "VALUES (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\");" % \
               (user_id, username, hash_psd, first_name, last_name, account_created, account_updated)
         print(sql)
-        success = db_operation.execute(sql)
+        success = db_executor.execute(sql)
         if success:
             resp_json = json.dumps({"id": user_id,
                                     "first_name": first_name,
@@ -136,6 +233,12 @@ def get_authentication(req_header):
     except Exception as e:
         print('Analysis authentication error: %s' % e)
         return ""
+
+
+def check_user_exist(user_name, password):
+    hash_psd = hashlib.md5(password.encode('utf-8')).hexdigest()
+    sql = "select * from health where user_name=\"%s\" and password=\"%s\";" % (user_name, hash_psd)
+    return db_executor.execute_and_get_result(sql)
 
 
 if __name__ == '__main__':
