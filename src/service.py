@@ -146,6 +146,13 @@ def delete_user_profile_image():
     if result:
         data = result[0]
         if data[7] is not None:
+            sql = "update health set "
+            sql += "image_filename = null, "
+            sql += "image_id = null, "
+            sql += "image_url = null, "
+            sql += "image_upload = null "
+            sql += "where user_name = \"%s\";" % user_name
+
             if s3_executor.delete(key=data[7]):
                 return "No Content", 204
             else:
