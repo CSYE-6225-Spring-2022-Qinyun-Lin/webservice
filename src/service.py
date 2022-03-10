@@ -84,12 +84,16 @@ def update_user_profile_image():
     user_name, password = auth.split(":")
     result = check_user_exist(user_name, password)
     if result:
+        # delete old image
+        if not s3_executor.delete(key=result[0][7]):
+            return "Bad request", 400
+
         file = request.files["image"]
         img_data = file.read()
 
         image_filename = file.filename
         image_upload = str(datetime.date.today())
-        image_id = hashlib.md5((user_name + image_upload).encode('utf-8')).hexdigest()
+        image_id = hashlib.md5((user_name + image_filename).encode('utf-8')).hexdigest()
         image_url = s3_executor.bucket_name + "/" + image_id
 
         if not s3_executor.post(key=image_id, data=img_data):
