@@ -3,8 +3,11 @@ import mysql.connector as mc
 
 class DBExecutor:
     def __init__(self):
-        self.host = open("/home/ec2-user/webConfig/mysql_host.txt").readline().strip()
-        self.user, self.password = open("/home/ec2-user/webConfig/mysql_key.txt").readline().strip().split(", ")
+        try:
+            self.host = open("/home/ec2-user/webConfig/mysql_host.txt").readline().strip()
+            self.user, self.password = open("/home/ec2-user/webConfig/mysql_key.txt").readline().strip().split(", ")
+        except FileNotFoundError:
+            print("MySQL file not found!")
 
     def connect_mysql(self):
         config = {

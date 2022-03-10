@@ -4,7 +4,10 @@ import boto3
 class S3Executor:
     def __init__(self):
         self.s3 = boto3.resource(service_name='s3')
-        self.bucket_name = open("/home/ec2-user/webConfig/bucket_name.txt").readline().strip()
+        try:
+            self.bucket_name = open("/home/ec2-user/webConfig/bucket_name.txt").readline().strip()
+        except FileNotFoundError:
+            print("Bucket name not found!")
 
     def post(self, key, data):
         try:
