@@ -85,7 +85,7 @@ def update_user_profile_image():
     result = check_user_exist(user_name, password)
     if result:
         # delete old image
-        if not s3_executor.delete(key=result[0][7]):
+        if result[0][7] is not None and not s3_executor.delete(key=result[0][7]):
             return "Bad request", 400
 
         file = request.files["image"]
