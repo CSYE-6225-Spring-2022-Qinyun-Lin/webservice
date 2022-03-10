@@ -16,15 +16,16 @@ The framework used is ```Python-Flask```
         - hashlib
         - datetime
         - re
+        - boto3
         (below are for unit test)
         - unittest
         - pytest
 
-    - Database:  MySQL
+    - Database:  MySQL (AWS RDS)
 
 
 ## Deploy
-Go to root dict and run ```python src/service.py```
+Go to root dict and run ```python3 src/service.py```
 
 The app will run on port 3333
 
@@ -41,3 +42,6 @@ method 2:
 ```
   python src/test_request.py
 ```
+
+## Verify the status of RDS
+Go to root dict and run ```python3 src/utils/verify_rds.py```
