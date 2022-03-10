@@ -103,7 +103,16 @@ def update_user_profile_image():
         sql += "where user_name = \"%s\";" % user_name
         print(sql)
         if db_executor.execute(sql):
-            return "Profile pic added/updated", 201
+
+            resp_json = json.dumps({"image_filename": image_filename,
+                                    "image_id": image_id,
+                                    "image_url": image_url,
+                                    "image_upload": image_upload,
+                                    "user_id": result[0][0]})
+            resp = flask.jsonify(resp_json)
+            resp.headers["Content-Type"] = "application / json"
+
+            return resp, 201
         else:
             return "Bad request", 400
     else:
