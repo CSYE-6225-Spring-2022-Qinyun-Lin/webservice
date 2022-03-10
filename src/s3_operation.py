@@ -4,7 +4,6 @@ import boto3
 class S3Executor:
     def __init__(self):
         self.s3 = boto3.resource(service_name='s3')
-        # self.bucket_name = "63385030-9fd8-11ec-b589-121a409b3fc5.prod.linqinyun.me"
         self.bucket_name = open("/home/ec2-user/webConfig/bucket_name.txt").readline().strip()
 
     def post(self, key, data):

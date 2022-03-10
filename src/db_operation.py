@@ -3,9 +3,6 @@ import mysql.connector as mc
 
 class DBExecutor:
     def __init__(self):
-        # self.host = "127.0.0.1"
-        # self.user = "root"
-        # self.password = "adminadmin!"
         self.host = open("/home/ec2-user/webConfig/mysql_host.txt").readline().strip()
         self.user, self.password = open("/home/ec2-user/webConfig/mysql_key.txt").readline().strip().split(", ")
 
