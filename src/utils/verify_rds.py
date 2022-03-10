@@ -1,6 +1,5 @@
 import mysql.connector as mc
 
-
 host = open("/home/ec2-user/webConfig/mysql_host.txt").readline().strip()
 user, password = open("/home/ec2-user/webConfig/mysql_key.txt").readline().strip().split(", ")
 
@@ -20,8 +19,10 @@ def get_all():
     try:
         cursor.execute(sql)
         result = cursor.fetchall()
-        print(result)
+        for each in result:
+            print(each)
         con.close()
+
     except Exception:
         return None
 
