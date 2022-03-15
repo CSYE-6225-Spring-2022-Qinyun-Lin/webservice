@@ -45,3 +45,6 @@ method 2:
 
 ## Verify the status of RDS
 Go to root dict and run ```python3 src/utils/verify_rds.py```
+
+
+FOR DEMO
