@@ -4,10 +4,20 @@ os: linux
 files:
   - source: ./src/service.py
     destination: /home/ec2-user/webservice/src
+  - source: ./src/db_operation.py
+    destination: /home/ec2-user/webservice/src
+  - source: ./src/s3_operation.py
+    destination: /home/ec2-user/webservice/src
 
 hooks:
+  BeforeInstall:
+    - location: ./codedeploy/beforeInstall.sh
+      timeout: 180
+      runas: ubuntu
   ApplicationStart:
     - location: ./codedeploy/applicationStart.sh
       timeout: 180
       runas: ubuntu
+  
+  
 

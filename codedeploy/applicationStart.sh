@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo systemctl restart webapp.service
+sudo systemctl start webapp.service
