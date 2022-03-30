@@ -7,5 +7,5 @@
 packer validate -syntax-only ./packer/ami.json
 
 # to build AMI
-packer build -var-file='./packer/vars.json' ./packerami.json
+packer build -var-file='./packer/vars.json' ./packer/ami.json
 ```
