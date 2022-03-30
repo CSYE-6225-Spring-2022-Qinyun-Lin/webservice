@@ -1,0 +1,55 @@
+
+name: deploy using AMI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: zip files
+        run: |
+          zip -r webservice.zip ./
+          pwd ./webservice
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # - name: Build AMI
+      #   uses: hashicorp/packer-github-actions@master
+      #   with:
+      #     command: build
+      #     arguments: "-color=false -on-error=abort -var=aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}
+      #      -var=aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }} -var-file=./packer/vars.json"
+      #     target: ./packer/ami.json
+      #   env:
+      #     PACKER_LOG: 1
+
+      - name: Copy Artifact to S3
+        run: |
+          aws s3 sync ./webservice.zip s3://csye6225-linqinyun-codedeploy-bucket
+
+      - name: Call Codedeploy API
+        run: |
+          output = $(aws deploy create-deployment \
+            --application-name csye6225-webapp \ 
+            --deployment-group-name csye6225-webapp-deployment \
+            --s3-location bucket=csye6225-linqinyun-codedeploy-bucket,key=webservice.zip,bundleType=zip \
+            --region us-east-1 \
+            --output json)
+          
+          echo $output
+
+          dId = $(echo $output | jq -r '.deploymentId')
+
+          aws deploy wait deployment-successful --deployment-id $dId
