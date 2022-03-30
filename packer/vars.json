@@ -1,9 +1,9 @@
 {
-    "aws_profile": "dev",
+    "aws_profile": "demo",
     "aws_access_key": "",
     "aws_secret_key": "",
     "aws_region": "us-east-1",
-    "subnet_id": "subnet-090f2943268918ab1",
+    "subnet_id": "subnet-067e9fc90596943e1",
     "source_ami": "ami-048ff3da02834afdc",
     "dev_id": "648607278322",
     "demo_id": "399550114864"
