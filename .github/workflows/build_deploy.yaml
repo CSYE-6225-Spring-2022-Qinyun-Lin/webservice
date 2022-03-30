@@ -45,7 +45,7 @@ jobs:
 
       - name: Call Codedeploy API
         run: |
-          output = $(aws deploy create-deployment \
+          output=$(aws deploy create-deployment \
             --application-name csye6225-webapp \ 
             --deployment-group-name csye6225-webapp-deployment \
             --s3-location bucket=csye6225-linqinyun-codedeploy-bucket,key=webservice.zip,bundleType=zip \
