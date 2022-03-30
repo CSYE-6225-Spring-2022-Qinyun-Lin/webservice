@@ -16,7 +16,11 @@ jobs:
       - name: zip files
         run: |
           zip -r webservice.zip ./
-          pwd ./webservice
+          mkdir codedeploy_artifact
+          mv ./webservice.zip ./codedeploy_artifact
+          pwd
+          cd codedeploy_artifact
+          ls -al
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -37,7 +41,7 @@ jobs:
 
       - name: Copy Artifact to S3
         run: |
-          aws s3 sync ./webservice.zip s3://csye6225-linqinyun-codedeploy-bucket
+          aws s3 sync ./codedeploy_artifact s3://csye6225-linqinyun-codedeploy-bucket
 
       - name: Call Codedeploy API
         run: |
