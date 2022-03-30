@@ -44,11 +44,11 @@ jobs:
 
       - name: Copy Artifact to S3
         run: |
-          aws s3 sync ./codedeploy_artifact s3://${{CODEDEPLOY_BUCKET}}
+          aws s3 sync ./codedeploy_artifact s3://${{ secrets.CODEDEPLOY_BUCKET }}
 
       - name: Call Codedeploy API
         run: |
-          output=$(aws deploy create-deployment --application-name ${{ env.APPLICATION_NAME }} --deployment-group-name ${{ env.DEPLOYMENT_GROUP_NAME }} --s3-location bucket=${{CODEDEPLOY_BUCKET}},key=webservice.zip,bundleType=zip --region us-east-1 --output json)
+          output=$(aws deploy create-deployment --application-name ${{ env.APPLICATION_NAME }} --deployment-group-name ${{ env.DEPLOYMENT_GROUP_NAME }} --s3-location bucket=${{ secrets.CODEDEPLOY_BUCKET }},key=webservice.zip,bundleType=zip --region us-east-1 --output json)
           echo $output
           dId=$(echo $output | jq -r '.deploymentId')
           aws deploy wait deployment-successful --deployment-id $dId
