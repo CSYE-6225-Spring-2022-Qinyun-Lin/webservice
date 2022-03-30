@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo systemctl stop webapp.service
+# sudo systemctl stop webapp.service
 
 cd /home/ec2-user/webservice/src
 

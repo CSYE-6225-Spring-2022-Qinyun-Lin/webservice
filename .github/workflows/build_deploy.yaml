@@ -1,5 +1,11 @@
 
-name: deploy using AMI
+name: Continuous Deployment
+
+env:
+  ARTIFACT_NAME: webservice.zip
+  APPLICATION_NAME: csye6225-webapp
+  DEPLOYMENT_GROUP_NAME: csye6225-webapp-deployment
+
 
 on:
   push:
@@ -15,12 +21,9 @@ jobs:
 
       - name: zip files
         run: |
-          zip -r webservice.zip ./
+          zip -r ${{ env.ARTIFACT_NAME }} ./src/*
           mkdir codedeploy_artifact
-          mv ./webservice.zip ./codedeploy_artifact
-          pwd
-          cd codedeploy_artifact
-          ls -al
+          mv ${{ env.ARTIFACT_NAME }} ./codedeploy_artifact
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -41,14 +44,11 @@ jobs:
 
       - name: Copy Artifact to S3
         run: |
-          aws s3 sync ./codedeploy_artifact s3://csye6225-linqinyun-codedeploy-bucket
+          aws s3 sync ./codedeploy_artifact s3://${{CODEDEPLOY_BUCKET}}
 
       - name: Call Codedeploy API
         run: |
-          output=$(aws deploy create-deployment --application-name csye6225-webapp --deployment-group-name csye6225-webapp-deployment --s3-location bucket=csye6225-linqinyun-codedeploy-bucket,key=webservice.zip,bundleType=zip --region us-east-1 --output json)
-          
+          output=$(aws deploy create-deployment --application-name ${{ env.APPLICATION_NAME }} --deployment-group-name ${{ env.DEPLOYMENT_GROUP_NAME }} --s3-location bucket=${{CODEDEPLOY_BUCKET}},key=webservice.zip,bundleType=zip --region us-east-1 --output json)
           echo $output
-
           dId=$(echo $output | jq -r '.deploymentId')
-
           aws deploy wait deployment-successful --deployment-id $dId
