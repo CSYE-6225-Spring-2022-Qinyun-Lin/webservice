@@ -178,7 +178,7 @@ def delete_user_profile_image():
 
 @app.route('/healthz', methods=['GET'])
 def health():
-    return "OK", 200
+    return "OK", 201
 
 
 @app.route('/v1/user', methods=['POST'])
