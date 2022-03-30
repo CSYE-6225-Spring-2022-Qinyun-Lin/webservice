@@ -176,7 +176,7 @@ def delete_user_profile_image():
         return "Bad request", 400
 
 
-@app.route('/health', methods=['GET'])
+@app.route('/healthz', methods=['GET'])
 def health():
     return "OK", 200
 
