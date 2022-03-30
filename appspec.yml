@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+
+files:
+  - source: ./src/*
+    destination: /home/ec2-user/webservice/src
+
+hooks:
+  ApplicationStart:
+    - location: ./codedeploy/applicationStart.sh
+      timeout: 180
+      runas: ubuntu
+
