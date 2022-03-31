@@ -1,9 +1,12 @@
 # webservice
-This is a health care web application, currently functions including :
+This is a web application based on various AWS resources with CI/CD, currently functions including:
 ```
   - Create user
   - Update user information
   - Get user information
+  - upload user profile image
+  - get user profile image
+  - delete user profile image
 ```
 The framework used is ```Python-Flask```
 
