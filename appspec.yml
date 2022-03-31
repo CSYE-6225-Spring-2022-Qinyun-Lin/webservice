@@ -8,6 +8,8 @@ files:
     destination: /home/ec2-user/webservice/src
   - source: ./src/s3_operation.py
     destination: /home/ec2-user/webservice/src
+  - source: ./systemd/webapp.service
+    destination: /etc/systemd/system/
 
 hooks:
   BeforeInstall:
