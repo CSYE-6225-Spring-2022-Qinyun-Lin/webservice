@@ -2,6 +2,8 @@
 
 # sudo systemctl stop webapp.service
 
+sleep 30
+
 cd /home/ec2-user/webservice/src
 
 sudo rm -rf ./service.py
