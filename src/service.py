@@ -7,15 +7,21 @@ import datetime
 import re
 import db_operation
 import s3_operation
+import utils.logger
+import statsd
 
 
 app = flask.Flask(__name__)
 db_executor = db_operation.DBExecutor()
 s3_executor = s3_operation.S3Executor()
+log = utils.logger.Logger("csye6225.log")
+metric_counter = statsd.client.StatsClient('localhost', 8125)
 
 
 @app.route('/v1/user/self', methods=['GET'])
 def get_user_info():
+    log.logger.info("[GET] /v1/user/self has been requested!")
+    metric_counter.incr("get_user_information")
     auth = get_authentication(request.headers)
     if auth == "":
         return "Unauthorized", 401
@@ -39,6 +45,8 @@ def get_user_info():
 
 @app.route('/v1/user/self', methods=['PUT'])
 def update_user_info():
+    log.logger.info("[PUT] /v1/user/self has been requested!")
+    metric_counter.incr("update_user_information")
     auth = get_authentication(request.headers)
     if auth == "":
         return "Unauthorized", 401
@@ -77,6 +85,8 @@ def update_user_info():
 
 @app.route('/v1/user/self/pic', methods=['POST'])
 def update_user_profile_image():
+    log.logger.info("[POST] /v1/user/self/pic has been requested!")
+    metric_counter.incr("update_user_profile_image")
     auth = get_authentication(request.headers)
     if auth == "":
         return "Unauthorized", 401
@@ -125,6 +135,8 @@ def update_user_profile_image():
 
 @app.route('/v1/user/self/pic', methods=['GET'])
 def get_user_profile_image():
+    log.logger.info("[GET] /v1/user/self/pic has been requested!")
+    metric_counter.incr("get_user_profile_image")
     auth = get_authentication(request.headers)
     if auth == "":
         return "Unauthorized", 401
@@ -150,6 +162,8 @@ def get_user_profile_image():
 
 @app.route('/v1/user/self/pic', methods=['DELETE'])
 def delete_user_profile_image():
+    log.logger.info("[DELETE] /v1/user/self/pic has been requested!")
+    metric_counter.incr("delete_user_profile_image")
     auth = get_authentication(request.headers)
     if auth == "":
         return "Unauthorized", 401
@@ -178,11 +192,15 @@ def delete_user_profile_image():
 
 @app.route('/healthz', methods=['GET'])
 def health():
+    log.logger.info("[GET] /healthz has been requested!")
+    metric_counter.incr("health_check")
     return "OK", 200
 
 
 @app.route('/v1/user', methods=['POST'])
 def create_user():
+    log.logger.info("[POST] /v1/user has been requested!")
+    metric_counter.incr("create_user")
     try:
         json_data = json.loads(request.data)
         first_name = json_data["first_name"]
@@ -246,4 +264,5 @@ def check_user_exist(user_name, password):
 
 
 if __name__ == '__main__':
+    log.logger.info("Starting application")
     app.run(host="0.0.0.0", port=3333, debug=False, processes=True)

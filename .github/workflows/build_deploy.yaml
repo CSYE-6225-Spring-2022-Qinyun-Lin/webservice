@@ -21,7 +21,7 @@ jobs:
 
       - name: zip files
         run: |
-          zip -r ${{ env.ARTIFACT_NAME }} ./src/* ./systemd/* ./codedeploy/* ./appspec.yml
+          zip -r ${{ env.ARTIFACT_NAME }} ./src/* ./systemd/* ./codedeploy/* ./appspec.yml ./cloudwatch_config/*
           mkdir codedeploy_artifact
           mv ${{ env.ARTIFACT_NAME }} ./codedeploy_artifact
 
