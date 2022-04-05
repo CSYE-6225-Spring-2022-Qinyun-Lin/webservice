@@ -14,7 +14,7 @@ import statsd
 app = flask.Flask(__name__)
 db_executor = db_operation.DBExecutor()
 s3_executor = s3_operation.S3Executor()
-log = utils.logger.Logger("/home/ec2-user/webservice/csye6225.log")
+log = utils.logger.Logger("csye6225.log")
 metric_counter = statsd.client.StatsClient('localhost', 8125)
 
 
