@@ -21,7 +21,7 @@ jobs:
     - name: install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flask pytest mysql-connector-python boto3
+        pip install flask pytest mysql-connector-python boto3 statsd
 
     # Runs a single command using the runners shell
     - name: Run a one-line script
