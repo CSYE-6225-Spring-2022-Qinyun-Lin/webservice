@@ -35,7 +35,10 @@ sudo chmod +x ./install
 sudo ./install auto
 sudo service codedeploy-agent status
 
+# install and config CloudWatch Agent
+sudo yum install amazon-cloudwatch-agent -y
+
 # install python3 and required libs
 sudo yum -y install python3
 sudo yum -y install python3-pip
-sudo pip3 install flask mysql-connector boto3
+sudo pip3 install flask mysql-connector boto3 statsd
