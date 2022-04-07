@@ -20,7 +20,7 @@ metric_counter = statsd.client.StatsClient('localhost', 8125)
 
 @app.route('/v1/user/self', methods=['GET'])
 def get_user_info():
-    log.logger.info("[GET] /v1/user/self has been requested!")
+    log.logger.info("[GET]/v1/user/self - Get user information has been requested!")
     metric_counter.incr("get_user_information")
     auth = get_authentication(request.headers)
     if auth == "":
@@ -45,7 +45,7 @@ def get_user_info():
 
 @app.route('/v1/user/self', methods=['PUT'])
 def update_user_info():
-    log.logger.info("[PUT] /v1/user/self has been requested!")
+    log.logger.info("[PUT] /v1/user/self - Update user information has been requested!")
     metric_counter.incr("update_user_information")
     auth = get_authentication(request.headers)
     if auth == "":
@@ -85,7 +85,7 @@ def update_user_info():
 
 @app.route('/v1/user/self/pic', methods=['POST'])
 def update_user_profile_image():
-    log.logger.info("[POST] /v1/user/self/pic has been requested!")
+    log.logger.info("[POST] /v1/user/self/pic - update user profile image has been requested!")
     metric_counter.incr("update_user_profile_image")
     auth = get_authentication(request.headers)
     if auth == "":
@@ -135,7 +135,7 @@ def update_user_profile_image():
 
 @app.route('/v1/user/self/pic', methods=['GET'])
 def get_user_profile_image():
-    log.logger.info("[GET] /v1/user/self/pic has been requested!")
+    log.logger.info("[GET] /v1/user/self/pic - get user profile image has been requested!")
     metric_counter.incr("get_user_profile_image")
     auth = get_authentication(request.headers)
     if auth == "":
@@ -162,7 +162,7 @@ def get_user_profile_image():
 
 @app.route('/v1/user/self/pic', methods=['DELETE'])
 def delete_user_profile_image():
-    log.logger.info("[DELETE] /v1/user/self/pic has been requested!")
+    log.logger.info("[DELETE] /v1/user/self/pic - delete user profile image has been requested!")
     metric_counter.incr("delete_user_profile_image")
     auth = get_authentication(request.headers)
     if auth == "":
@@ -192,14 +192,14 @@ def delete_user_profile_image():
 
 @app.route('/healthz', methods=['GET'])
 def health():
-    log.logger.info("[GET] /healthz has been requested!")
+    log.logger.info("[GET] /healthz - health check has been requested!")
     metric_counter.incr("health_check")
     return "OK", 200
 
 
 @app.route('/v1/user', methods=['POST'])
 def create_user():
-    log.logger.info("[POST] /v1/user has been requested!")
+    log.logger.info("[POST] /v1/user - create user has been requested!")
     metric_counter.incr("create_user")
     try:
         json_data = json.loads(request.data)
