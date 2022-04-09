@@ -181,7 +181,7 @@ def delete_user_profile_image():
             sql += "where user_name = \"%s\";" % user_name
 
             if db_executor.execute(sql) and s3_executor.delete(key=data[7]):
-                return "No Content", 204
+                return "No Content", 200
             else:
                 return "Bad request", 400
         else:
@@ -190,11 +190,11 @@ def delete_user_profile_image():
         return "Bad request", 400
 
 
-@app.route('/healthz', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def health():
     log.logger.info("[GET] /healthz - health check has been requested!")
     metric_counter.incr("health_check")
-    return "OK", 200
+    return "DEMODEMO", 201
 
 
 @app.route('/v1/user', methods=['POST'])
