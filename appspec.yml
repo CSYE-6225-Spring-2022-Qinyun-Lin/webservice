@@ -8,6 +8,8 @@ files:
     destination: /home/ec2-user/webservice/src
   - source: ./src/s3_operation.py
     destination: /home/ec2-user/webservice/src
+  - source: ./src/verify_operation.py
+    destination: /home/ec2-user/webservice/src
   - source: ./cloudwatch_config/cloudwatch-config.json
     destination: /opt
 
