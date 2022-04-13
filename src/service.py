@@ -237,10 +237,6 @@ def create_user():
         if reg_pattern.match(username) is None:
             return "Bad request", 400
 
-        # Start performing validation
-        if not verify_operation.send_validation(email_address=username):
-            return "Bad request", 400
-
         user_id = hashlib.md5(account_created.encode('utf-8')).hexdigest()
         hash_psd = hashlib.md5(password.encode('utf-8')).hexdigest()
 
@@ -259,6 +255,10 @@ def create_user():
                                     "account_updated": str(account_updated)})
             resp = flask.jsonify(resp_json)
             resp.headers["Content-Type"] = "application / json"
+
+            # Start performing validation
+            if not verify_operation.send_validation(email_address=username):
+                return "Bad request", 400
 
             return resp, 201
         else:
