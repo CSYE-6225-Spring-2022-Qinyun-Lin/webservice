@@ -8,7 +8,7 @@ def send_validation(email_address):
     sns_client = boto3.client('sns', region_name='us-east-1')
     dynamodb_table = boto3.resource('dynamodb', region_name='us-east-1').Table('csye6225-token')
 
-    token = uuid4()
+    token = str(uuid4())
     item = {"UserId": email_address, "token": token, "ExpireTime": int(time.time() + 300), "sendStatus": "Not sent"}
     message = "{\"email\": \"%s\", \"token\": \"%s\", \"message_type\": \"validation\"}" % (email_address, str(token))
 
