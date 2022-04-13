@@ -7,6 +7,7 @@ import datetime
 import re
 import db_operation
 import s3_operation
+import verify_operation
 import utils.logger
 import statsd
 
@@ -29,7 +30,11 @@ def get_user_info():
     user_name, password = auth.split(":")
     result = check_user_exist(user_name, password)
     if result:
+        # Check if Email address is verified
         data = result[0]
+        if not data[11]:
+            return "Unauthorized", 401
+
         resp_json = json.dumps({"id": data[0],
                                 "first_name": data[3],
                                 "last_name": data[4],
@@ -63,6 +68,11 @@ def update_user_info():
         user_name, password = auth.split(":")
         result = check_user_exist(user_name, password)
         if result:
+            # Check if Email address is verified
+            data = result[0]
+            if not data[11]:
+                return "Unauthorized", 401
+
             sql = "update health set "
             for key in to_update:
                 value = json_data[key]
@@ -94,6 +104,11 @@ def update_user_profile_image():
     user_name, password = auth.split(":")
     result = check_user_exist(user_name, password)
     if result:
+        # Check if Email address is verified
+        data = result[0]
+        if not data[11]:
+            return "Unauthorized", 401
+
         # delete old image
         if result[0][7] is not None and not s3_executor.delete(key=result[0][7]):
             return "Bad request", 400
@@ -144,7 +159,11 @@ def get_user_profile_image():
     user_name, password = auth.split(":")
     result = check_user_exist(user_name, password)
     if result:
+        # Check if Email address is verified
         data = result[0]
+        if not data[11]:
+            return "Unauthorized", 401
+
         if data[7] is not None:
             resp_json = json.dumps({"image_filename": data[8],
                                     "image_id": data[7],
@@ -171,7 +190,11 @@ def delete_user_profile_image():
     user_name, password = auth.split(":")
     result = check_user_exist(user_name, password)
     if result:
+        # Check if Email address is verified
         data = result[0]
+        if not data[11]:
+            return "Unauthorized", 401
+
         if data[7] is not None:
             sql = "update health set "
             sql += "image_filename = null, "
@@ -190,11 +213,11 @@ def delete_user_profile_image():
         return "Bad request", 400
 
 
-@app.route('/health', methods=['GET'])
+@app.route('/healthz', methods=['GET'])
 def health():
     log.logger.info("[GET] /healthz - health check has been requested!")
     metric_counter.incr("health_check")
-    return "DEMODEMO", 201
+    return "OK", 200
 
 
 @app.route('/v1/user', methods=['POST'])
@@ -232,12 +255,36 @@ def create_user():
                                     "account_updated": str(account_updated)})
             resp = flask.jsonify(resp_json)
             resp.headers["Content-Type"] = "application / json"
+
+            # Start performing validation
+            verify_operation.send_validation(email_address=username)
+
             return resp, 201
         else:
             return "Bad request", 400
 
     except KeyError or json.decoder.JSONDecodeError:
-        # return "Missing required field: %s" % e, 400
+        return "Bad request", 400
+
+
+@app.route('/v1/verifyUserEmail', methods=['GET'])
+def verify_user_email():
+    dic = request.args
+    try:
+        email = dic["email"]
+        token = dic["token"]
+        sql = "select * from health where user_name=\"%s\";" % email
+        result = db_executor.execute_and_get_result(sql)
+        if result:
+            if verify_operation.verify_token(email, token):
+                sql = "update health set verified=TRUE where user_name=\"%s\";" % email
+                print(sql)
+                db_executor.execute(sql)
+            return "Your account has been successfully verified!", 200
+        else:
+            return "Bad request", 400
+
+    except KeyError:
         return "Bad request", 400
 
 

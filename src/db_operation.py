@@ -37,11 +37,24 @@ class DBExecutor:
                         image_filename varchar(50) default null null,
                         image_url varchar(200) default null null,
                         image_upload date default null null,
+                        verified boolean default FALSE null,
                         constraint heath_id_uindex
                             unique (id),
                         constraint heath_user_name_uindex
                             unique (user_name)
                     );"""
+            cursor.execute(sql)
+            con.commit()
+            con.close()
+            return True
+        except Exception:
+            return False
+
+    def delete_db_table(self):
+        con = self.connect_mysql()
+        cursor = con.cursor(buffered=True)
+        try:
+            sql = "drop table health"
             cursor.execute(sql)
             con.commit()
             con.close()
@@ -74,6 +87,7 @@ class DBExecutor:
 
 if __name__ == '__main__':
     db_executor = DBExecutor()
+
     if db_executor.setup_db():
         print("Set up MySQL successfully!")
     else:
