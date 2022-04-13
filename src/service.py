@@ -284,7 +284,7 @@ def verify_user_email():
         else:
             return "Bad request", 400
 
-    except KeyError:
+    except KeyError or Exception:
         return "Bad request", 400
 
 
