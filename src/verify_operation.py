@@ -29,7 +29,7 @@ def verify_token(email_address, token):
             item = response['Item']
             true_token = item['token']
             expire_time = item["ExpireTime"]
-            if expire_time > int(time.time()):
+            if expire_time < int(time.time()):
                 return False
             if true_token == token:
                 return True
