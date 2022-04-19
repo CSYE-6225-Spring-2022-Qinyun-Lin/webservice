@@ -281,7 +281,9 @@ def verify_user_email():
                 sql = "update health set verified=TRUE where user_name=\"%s\";" % email
                 print(sql)
                 db_executor.execute(sql)
-            return "Your account has been successfully verified!", 200
+                return "Your account has been successfully verified!", 200
+            else:
+                return "Your token is expired or other error occurs!", 200
         else:
             return "Bad request", 400
 

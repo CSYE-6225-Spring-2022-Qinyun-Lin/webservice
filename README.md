@@ -50,4 +50,8 @@ method 2:
 Go to root dict and run ```python3 src/utils/verify_rds.py```
 
 
-FOR DEMO
+## Import SSL Certificate to AWS
+```
+aws acm import-certificate --profile=demo --certificate fileb://prod_linqinyun_me/prod_linqinyun_me.crt --certificate-chain fileb://prod_linqinyun_me/prod_linqinyun_me.ca-bundle --private-key fileb://prod_linqinyun_me/private.key
+```
+
