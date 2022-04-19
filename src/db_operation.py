@@ -16,8 +16,8 @@ class DBExecutor:
             'host': self.host,
             'port': '3306',
             'database': 'csye6225',
-            'ssl_ca': '/home/ec2-user/webservice/us-east-1-bundle.pem',
-            'ssl_verify_identity': True
+            'ssl_ca': '/home/ec2-user/webservice/us-east-1-bundle.pem'
+            # 'ssl_verify_identity': True
         }
         con = mc.connect(**config)
         return con
