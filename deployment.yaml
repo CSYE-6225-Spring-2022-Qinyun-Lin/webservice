@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: nginx-release
+  labels:
+    app: nginx-release
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxSurge: 20%
+      maxUnavailable: 20%
+  selector:
+    matchLabels:
+      app: nginx-release
+  template:
+    metadata:
+      labels:
+        app: nginx-release
+    spec:
+      containers:
+        - name: nginx-release
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          startupProbe:
+            tcpSocket:
+              port: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
